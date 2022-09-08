@@ -1,13 +1,11 @@
-FROM alpine:edge
+FROM nginx:latest
 
-RUN apk update && \
-    apk add --no-cache ca-certificates caddy tor wget && \
-    wget -O Xray-linux-64.zip  https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip  && \
-    unzip Xray-linux-64.zip && \
-    chmod +x /xray && \
-    rm -rf /var/cache/apk/*
+# noop for legacy migration
+RUN mkdir /app && \
+    echo "#!/bin/bash" > /app/migrate.sh && \
+    chmod +x /app/migrate.sh
 
-ADD start.sh /start.sh
-RUN chmod +x /start.sh
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY html /usr/share/nginx/html
 
-CMD /start.sh
+EXPOSE 80
